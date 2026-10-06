@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 180" role="img" aria-labelledby="title desc">
+  <title id="title">LAZY BREW</title>
+  <desc id="desc">Coffee and pastries</desc>
+  <g fill="#fff" text-anchor="middle" font-family="Arial, Helvetica, sans-serif">
+    <text x="450" y="76" font-size="67" letter-spacing="19" font-weight="300">LAZY BREW</text>
+    <path d="M95 103.5H805" fill="none" stroke="#fff" stroke-width="2"/>
+    <text x="450" y="151" font-size="29" letter-spacing="1.5"><tspan font-weight="700">COFFEE</tspan><tspan font-weight="300">  |  PASTRIES</tspan></text>
+  </g>
+</svg>

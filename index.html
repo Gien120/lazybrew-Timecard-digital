@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#171310">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Lazy Brew">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon.svg">
+  <title>LAZY BREW | Timecard</title>
+  <style>
+    :root { color-scheme:dark; --canvas:#171310; --panel:#211a15; --panel-2:#f7f1e8; --ink:#30251e; --cream:#fbf5eb; --tan:#d7b693; --brown:#684734; --line:#e6dbce; --muted:#89796d; --green:#81906a; --red:#a94737; }
+    * { box-sizing:border-box; }
+    [hidden] { display:none !important; }
+    body { margin:0; min-height:100vh; color:var(--cream); background-color:var(--canvas); background-image:radial-gradient(ellipse at 50% -25%,#473529 0,transparent 57%),linear-gradient(#ffffff05 1px,transparent 1px),linear-gradient(90deg,#ffffff05 1px,transparent 1px); background-size:auto,32px 32px,32px 32px; font:15px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+    main { width:min(100%,1100px); margin:auto; padding:24px 24px 54px; }
+    .hero { position:relative; display:flex; align-items:center; gap:22px; min-height:170px; overflow:hidden; padding:24px 30px; border:1px solid #ffffff22; border-radius:18px; background:linear-gradient(115deg,#050505,#11100f 72%,#211810); box-shadow:0 16px 44px #0008; }
+    .hero::before { content:""; position:absolute; width:270px; height:270px; right:-54px; top:-120px; border:1px solid #ffffff13; border-radius:50%; box-shadow:0 0 0 24px #ffffff04,0 0 0 48px #ffffff03; }
+    .hero::after { content:""; position:absolute; width:120px; height:120px; right:74px; bottom:-90px; border-radius:50%; background:#a87553; opacity:.4; box-shadow:0 0 44px #ad76504a; }
+    .brand-logo-wrap { z-index:1; width:min(35%,310px); flex:0 0 auto; padding-right:22px; border-right:1px solid #ffffff37; }
+    .brand-logo { display:block; width:100%; }
+    .hero-copy { z-index:1; }
+    .hero-payroll { z-index:1; margin-left:auto; padding:9px 14px; border-color:#d7b69355; border-radius:999px; background:#211a15a6; color:#e4c8a8; font-size:10px; letter-spacing:.08em; white-space:nowrap; }
+    .eyebrow { margin:0 0 5px; color:var(--tan); font-size:10px; font-weight:850; letter-spacing:.16em; }
+    h1 { margin:0; color:var(--cream); font-size:clamp(35px,6vw,51px); line-height:1; letter-spacing:-.06em; }
+    h1 span { color:var(--tan); }
+    .tagline { margin:9px 0 0; color:#c6bdb2; font-size:13px; }
+    .summary { display:grid; grid-template-columns:repeat(3,1fr); gap:13px; margin:16px 0; }
+    .metric { position:relative; min-height:100px; overflow:hidden; padding:16px 18px; border:1px solid #ffffff16; border-radius:14px; background:linear-gradient(145deg,#28211b,#201a16); box-shadow:0 9px 24px #0004; }
+    .metric::after { content:""; position:absolute; width:58px; height:58px; right:-20px; bottom:-25px; border-radius:50%; background:#d7b6931d; }
+    .metric:nth-child(2)::after { background:#ba76501d; }
+    .metric:nth-child(3) { border-color:#d7b69350; background:linear-gradient(145deg,#39291f,#261d17); }
+    .metric span { display:block; color:#b7a99b; font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+    .metric strong { position:relative; z-index:1; display:block; margin-top:8px; color:var(--cream); font-size:clamp(21px,3vw,30px); line-height:1.1; letter-spacing:-.04em; font-variant-numeric:tabular-nums; }
+    .metric:nth-child(3) strong { color:#ead1b6; }
+    .metric small { color:#b7a99b; font-size:11px; letter-spacing:0; }
+    .panel { overflow:hidden; border:1px solid #594635; border-radius:16px; background:var(--panel-2); color:var(--ink); box-shadow:0 16px 38px #0005; }
+    .panel-head { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:19px 21px; }
+    .panel-head h2 { margin:0; color:#30251e; font-size:18px; letter-spacing:-.035em; }
+    .panel-head p { margin:4px 0 0; color:#85776b; font-size:12px; }
+    .fields { display:flex; align-items:flex-end; gap:10px; }
+    label { display:grid; gap:5px; color:#80634c; font-size:10px; font-weight:850; letter-spacing:.07em; }
+    input,select,button { font:inherit; }
+    .top-input { width:190px; padding:9px 10px; border:1px solid #ddcebf; border-radius:9px; outline:none; background:#fffaf3; color:#33271f; font-size:13px; letter-spacing:0; }
+    .top-input.rate { width:116px; text-align:right; }
+    input:focus,select:focus { border-color:#a87553; outline:none; box-shadow:0 0 0 3px #a875531c; }
+    .table-wrap { width:100%; overflow-x:auto; }
+    table { width:100%; min-width:790px; table-layout:fixed; border-collapse:collapse; }
+    th { height:42px; padding:8px 7px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:#eee5d9; color:#80664f; text-align:center; font-size:9px; font-weight:850; letter-spacing:.08em; }
+    td { height:57px; padding:5px 7px; border-bottom:1px solid #e8ded3; text-align:center; }
+    tbody tr:last-child td { border-bottom:0; }
+    tbody tr:hover { background:#fffaf3; }
+    td input { width:100%; min-width:0; padding:8px 4px; border:1px solid transparent; border-radius:7px; outline:none; background:transparent; color:#30251e; text-align:center; font-size:12px; }
+    td input:hover { border-color:#e2d4c5; background:#fffaf3; }
+    td input:focus { border-color:#a87553; background:#fffaf3; box-shadow:0 0 0 3px #a875531c; }
+    td input[type=number] { appearance:textfield; -moz-appearance:textfield; }
+    td input[type=number]::-webkit-inner-spin-button,td input[type=number]::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
+    .computed { color:#736357; font-size:11px; font-weight:750; font-variant-numeric:tabular-nums; white-space:nowrap; }
+    [data-total] { color:#64412e; font-weight:850; }
+    [data-hours] { color:#aa6945; }
+    .panel-foot { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:13px 18px; border-top:1px solid var(--line); background:#f0e8de; }
+    .note { color:#7f7166; font-size:11px; }
+    .note::before { content:""; display:inline-block; width:7px; height:7px; margin-right:7px; border-radius:50%; background:var(--green); }
+    .actions { display:flex; flex-wrap:wrap; gap:8px; }
+    button { padding:9px 13px; border:1px solid #d8cbbb; border-radius:9px; background:#fffaf3; color:#3d3027; font-size:12px; font-weight:750; cursor:pointer; transition:transform .15s,box-shadow .15s; }
+    button:hover { transform:translateY(-1px); border-color:#a875536f; box-shadow:0 5px 16px #613f2518; }
+    .primary { border-color:#39271d; background:#39271d; color:#fff7ed; }
+    .primary:hover { background:#543b2c; }
+    #installBtn { color:#674435; }
+    #message { min-height:18px; margin:9px 3px; color:#657448; font-size:12px; }
+    #message.error { color:var(--red); }
+    .manager { margin-top:19px; }
+    .transfer-note { margin:0; padding:0 20px 12px; color:#806f61; font-size:11px; }
+    .manager-tools { display:flex; align-items:flex-end; flex-wrap:wrap; gap:10px; }
+    .manager-tools input,.manager-tools select { min-width:140px; padding:8px 9px; border:1px solid #ddcebf; border-radius:8px; background:#fffaf3; color:#33271f; font-size:12px; }
+    .manager-table { min-width:1060px; }
+    .manager-table td { height:47px; padding:5px; color:#55483d; font-size:11px; white-space:nowrap; }
+    .status { font-weight:850; text-transform:capitalize; }
+    .status-pending { color:#98601d !important; }
+    .status-approved { color:#42683c !important; }
+    .status-rejected { color:#a94737 !important; }
+    .row-action { margin:2px; padding:6px 8px; border-radius:7px; font-size:10px; }
+    .empty { padding:22px !important; color:#8a7d71 !important; text-align:center !important; }
+    .subhead { padding:17px 20px; }
+    .subhead h2 { margin:0; font-size:18px; }
+    .subhead p { margin:4px 0 0; color:#85776b; font-size:12px; }
+    .tip { margin:12px 2px 0; color:#a99a8c; text-align:center; font-size:11px; }
+    @media(max-width:680px) {
+      main { padding:13px 11px 30px; }
+      .hero { min-height:142px; padding:18px 15px; gap:13px; border-radius:15px; }
+      .hero-payroll { padding:8px 10px; font-size:8px; }
+      .brand-logo-wrap { width:36%; padding-right:12px; }
+      h1 { font-size:clamp(28px,7vw,39px); }
+      .eyebrow { font-size:8px; letter-spacing:.1em; }
+      .tagline { font-size:11px; }
+      .summary { gap:7px; margin:11px 0; }
+      .metric { min-height:83px; padding:12px 9px; }
+      .metric span { font-size:8px; letter-spacing:.04em; }
+      .metric strong { font-size:clamp(16px,5vw,22px); }
+      .metric small { font-size:9px; }
+      .panel-head { align-items:flex-start; flex-direction:column; padding:15px; }
+      .fields { display:grid; grid-template-columns:1fr 1fr; width:100%; }
+      .top-input,.top-input.rate { width:100%; }
+      .panel-foot { align-items:flex-start; flex-direction:column; padding:12px 14px; }
+      .actions { width:100%; }
+      #addBtn { flex:1; }
+      .manager-tools { display:grid; grid-template-columns:1fr 1fr; width:100%; }
+      .manager-tools input,.manager-tools select { min-width:0; width:100%; }
+      .transfer-note { padding:0 15px 12px; }
+    }
+    @media(prefers-reduced-motion:no-preference) {
+      .hero,.metric,.panel { animation:rise .45s ease-out both; }
+      .metric:nth-child(2) { animation-delay:.05s; }.metric:nth-child(3) { animation-delay:.1s; }
+      @keyframes rise { from { opacity:0; transform:translateY(7px); } to { opacity:1; transform:translateY(0); } }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="hero">
+      <div class="brand-logo-wrap"><img class="brand-logo" src="./lazy-brew-logo.svg" alt="LAZY BREW — Coffee | Pastries"></div>
+      <div class="hero-copy"><p class="eyebrow">TEAM TIME &amp; PAYROLL</p><h1>TIME<span>CARD</span></h1><p class="tagline">Crew hours. Sorted.</p></div>
+    </header>
+    <section class="summary" aria-label="Current shift summary">
+      <article class="metric"><span>Total hours</span><strong id="sumHours">0.00 <small>hrs</small></strong></article>
+      <article class="metric"><span>Base salary</span><strong id="sumBase">₱0.00</strong></article>
+      <article class="metric"><span>Total pay</span><strong id="sumTotal">₱0.00</strong></article>
+    </section>
+    <section class="panel">
+      <div class="panel-head">
+        <div><h2>Employee timecard</h2><p>Complete each shift and it saves to this device automatically.</p></div>
+        <div class="fields">
+          <label>EMPLOYEE NAME<input id="employeeName" class="top-input" maxlength="80" placeholder="Enter employee name" autocomplete="name"></label>
+          <label>HOURLY RATE ₱<input id="hourlyRate" class="top-input rate" type="number" min="0" step="0.01" value="100"></label>
+        </div>
+      </div>
+      <div class="table-wrap"><table aria-label="New shifts"><colgroup><col style="width:14%"><col style="width:12%"><col style="width:12%"><col style="width:12%"><col style="width:13%"><col style="width:12%"><col style="width:15%"><col style="width:10%"></colgroup>
+        <thead><tr><th>DATE</th><th>TIME IN</th><th>TIME OUT</th><th>SALARY</th><th>INCENTIVES</th><th>TRANSPO</th><th>TOTAL SALARY</th><th>TOTAL HRS</th></tr></thead><tbody id="shiftRows"></tbody>
+      </table></div>
+      <div class="panel-foot"><span class="note">Saved on this device only</span><div class="actions"><button id="installBtn" hidden>Install App</button><button id="addBtn">＋ Add Shift</button></div></div>
+    </section>
+    <p id="message" aria-live="polite"></p>
+    <p class="tip">Pay = hours × hourly rate + incentives + transpo. Overnight shifts are supported.</p>
+
+    <section id="managerPanel" class="panel manager" hidden>
+      <div class="panel-head">
+        <div><h2>Saved payroll records</h2><p>Records saved in this browser on this device.</p></div>
+        <div class="manager-tools"><label>MONTH<input id="monthFilter" type="month"></label><label>EMPLOYEE<input id="employeeFilter" type="search" placeholder="All employees"></label><button id="exportBtn">Export CSV</button><button id="exportBackup">Export backup</button><button id="importBackupBtn">Import staff backup</button><button id="hideRecords">Hide records</button><input id="importBackupFile" type="file" accept="application/json,.json" hidden></div>
+      </div>
+      <p class="transfer-note">To combine records from employee phones, have each person export a backup and import it here. Imported shifts return to Pending for review.</p>
+      <section class="summary" aria-label="Saved payroll summary"><article class="metric"><span>Hours this month</span><strong id="recordHours">0.00 <small>hrs</small></strong></article><article class="metric"><span>Total payroll</span><strong id="recordPay">₱0.00</strong></article><article class="metric"><span>Pending approval</span><strong id="pendingCount">0</strong></article></section>
+      <div class="table-wrap"><table class="manager-table"><thead><tr><th>EMPLOYEE</th><th>DATE</th><th>TIME IN</th><th>TIME OUT</th><th>HOURS</th><th>RATE</th><th>BASE PAY</th><th>INCENTIVES</th><th>TRANSPO</th><th>TOTAL</th><th>STATUS</th><th>CHANGE</th></tr></thead><tbody id="records"></tbody></table></div>
+    </section>
+  </main>
+  <script>
+    const RECORDS_KEY='lazy-brew-payroll-v1',DRAFT_KEY='lazy-brew-draft-v1',LEGACY_KEY='timecard-data-v1';
+    const peso=new Intl.NumberFormat('en-PH',{style:'currency',currency:'PHP',maximumFractionDigits:2});
+    const $=s=>document.querySelector(s),now=new Date(),today=localDate(now);
+    function localDate(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+    function safeRead(key,fallback){try{return JSON.parse(localStorage.getItem(key))??fallback;}catch{return fallback;}}
+    const legacy=safeRead(LEGACY_KEY,null),oldDraft=safeRead(DRAFT_KEY,null);
+    let draft=oldDraft||{employeeName:legacy?.employeeName||'',rate:legacy?.rate??100,rows:legacy?.rows?.length?legacy.rows:[blankRow(),blankRow(),blankRow()]};
+    let records=safeRead(RECORDS_KEY,[]);if(!Array.isArray(records))records=[];
+    draft.rows=(draft.rows||[]).map(row=>({id:row.id||crypto.randomUUID(),date:row.date||today,in:row.in||'',out:row.out||'',incentive:row.incentive||'',transpo:row.transpo||''}));
+    while(draft.rows.length<3)draft.rows.push(blankRow());
+    function blankRow(){return{id:crypto.randomUUID(),date:today,in:'',out:'',incentive:'',transpo:''};}
+    $('#employeeName').value=draft.employeeName||'';$('#hourlyRate').value=Number(draft.rate)||100;
+    $('#monthFilter').value=today.slice(0,7);
+    function saveDraft(){draft.employeeName=$('#employeeName').value.trim();draft.rate=Number($('#hourlyRate').value)||0;localStorage.setItem(DRAFT_KEY,JSON.stringify(draft));}
+    function hoursFor(start,end){if(!start||!end)return 0;const[sh,sm]=start.split(':').map(Number),[eh,em]=end.split(':').map(Number);let minutes=eh*60+em-sh*60-sm;if(minutes<0)minutes+=1440;return Number((minutes/60).toFixed(2));}
+    function renderDraft(){const body=$('#shiftRows');body.replaceChildren();draft.rows.forEach(row=>{const tr=document.createElement('tr');[['date','date','DATE'],['in','time','TIME IN'],['out','time','TIME OUT'],['salary','text','SALARY'],['incentive','number','INCENTIVES'],['transpo','number','TRANSPO'],['total','text','TOTAL SALARY'],['hours','text','TOTAL HRS']].forEach(([key,type,label])=>{const td=document.createElement('td');if(['salary','total','hours'].includes(key)){td.className='computed';td.dataset[key]='';}else{const input=document.createElement('input');input.type=type;input.value=row[key]||'';input.setAttribute('aria-label',label);if(type==='number'){input.min='0';input.step='0.01';}input.oninput=()=>{row[key]=input.value;saveDraft();calculateDraft();syncCompletedShifts();};td.append(input);}tr.append(td);});body.append(tr);});calculateDraft();}
+    function calculateDraft(){const rate=Number($('#hourlyRate').value)||0;let hours=0,base=0,total=0;[...$('#shiftRows').children].forEach((tr,i)=>{const row=draft.rows[i],h=hoursFor(row.in,row.out),salary=Number((h*rate).toFixed(2)),sum=salary+(Number(row.incentive)||0)+(Number(row.transpo)||0);tr.querySelector('[data-salary]').textContent=peso.format(salary);tr.querySelector('[data-total]').textContent=peso.format(sum);tr.querySelector('[data-hours]').textContent=h?h.toFixed(2):'';hours+=h;base+=salary;total+=sum;});$('#sumHours').innerHTML=`${hours.toFixed(2)} <small>hrs</small>`;$('#sumBase').textContent=peso.format(base);$('#sumTotal').textContent=peso.format(total);}
+    function saveRecords(){localStorage.setItem(RECORDS_KEY,JSON.stringify(records));}    function syncCompletedShifts(){const name=$('#employeeName').value.trim(),rate=Number($('#hourlyRate').value)||0;if(!name||rate<=0)return;let added=0;for(const row of draft.rows){if(!row.date||!row.in||!row.out||(Number(row.incentive)||0)<0||(Number(row.transpo)||0)<0)continue;const hours=hoursFor(row.in,row.out);if(hours<=0)continue;const base=Number((hours*rate).toFixed(2)),incentive=Number((Number(row.incentive)||0).toFixed(2)),transpo=Number((Number(row.transpo)||0).toFixed(2)),total=Number((base+incentive+transpo).toFixed(2));let record=records.find(item=>item.draft_id===row.id);if(!record){record={id:crypto.randomUUID(),draft_id:row.id,status:'pending'};records.push(record);added++;}else if(record.employee_name!==name||record.work_date!==row.date||record.time_in!==row.in||record.time_out!==row.out||Number(record.hourly_rate)!==rate||Number(record.incentive)!==incentive||Number(record.transpo)!==transpo){record.status='pending';}Object.assign(record,{employee_name:name,work_date:row.date,time_in:row.in,time_out:row.out,total_hours:hours,hourly_rate:rate,base_salary:base,incentive,transpo,total_salary:total});}if(added)message(`${added} completed shift${added===1?'':'s'} saved to payroll.`);saveRecords();renderRecords();}
+    function message(text,error=false){$('#message').textContent=text;$('#message').classList.toggle('error',error);}
+    function visibleRecords(){const month=$('#monthFilter').value,employee=$('#employeeFilter').value.trim().toLowerCase();return records.filter(r=>(!month||r.work_date.startsWith(month))&&(!employee||r.employee_name.toLowerCase().includes(employee))).sort((a,b)=>b.work_date.localeCompare(a.work_date));}
+    function renderRecords(){const body=$('#records'),shown=visibleRecords();body.replaceChildren();if(!shown.length){const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=12;td.className='empty';td.textContent='No saved records for this filter.';tr.append(td);body.append(tr);}shown.forEach(record=>{const tr=document.createElement('tr');[record.employee_name,record.work_date,record.time_in,record.time_out,Number(record.total_hours).toFixed(2),peso.format(record.hourly_rate),peso.format(record.base_salary),peso.format(record.incentive),peso.format(record.transpo),peso.format(record.total_salary),record.status].forEach((value,index)=>{const td=document.createElement('td');td.textContent=value;if(index===10){td.className=`status status-${record.status}`;}tr.append(td);});const action=document.createElement('td'),button=document.createElement('button');button.className='row-action';button.textContent=record.status==='pending'?'Mark approved':record.status==='approved'?'Mark pending':'Delete';button.onclick=()=>{if(record.status==='rejected'){records=records.filter(row=>row.id!==record.id);}else{record.status=record.status==='pending'?'approved':'pending';}saveRecords();renderRecords();};action.append(button);tr.append(action);body.append(tr);});const month=$('#monthFilter').value,monthly=records.filter(r=>!month||r.work_date.startsWith(month));$('#recordHours').innerHTML=`${monthly.reduce((sum,r)=>sum+Number(r.total_hours),0).toFixed(2)} <small>hrs</small>`;$('#recordPay').textContent=peso.format(monthly.reduce((sum,r)=>sum+Number(r.total_salary),0));$('#pendingCount').textContent=String(monthly.filter(r=>r.status==='pending').length);}
+    $('#employeeName').oninput=saveDraft;$('#hourlyRate').oninput=()=>{saveDraft();calculateDraft();};$('#addBtn').onclick=()=>{draft.rows.push(blankRow());saveDraft();renderDraft();};$('#monthFilter').onchange=renderRecords;$('#employeeFilter').oninput=renderRecords;
+    $('#exportBtn').onclick=()=>{const rows=[['Employee','Date','Time In','Time Out','Hours','Hourly Rate','Base Salary','Incentives','Transpo','Total Salary','Status'],...visibleRecords().map(r=>[r.employee_name,r.work_date,r.time_in,r.time_out,r.total_hours,r.hourly_rate,r.base_salary,r.incentive,r.transpo,r.total_salary,r.status])];const csv=rows.map(row=>row.map(value=>`"${String(value??'').replaceAll('"','""')}"`).join(',')).join('\r\n'),link=document.createElement('a');link.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));link.download=`lazy-brew-payroll-${$('#monthFilter').value||'all'}.csv`;link.click();URL.revokeObjectURL(link.href);};
+    function downloadFile(name,content,type){const link=document.createElement('a');link.href=URL.createObjectURL(new Blob([content],{type}));link.download=name;link.click();URL.revokeObjectURL(link.href);}
+    $('#exportBackup').onclick=()=>downloadFile('lazy-brew-records.json',JSON.stringify({application:'lazy-brew-timecard',version:1,records},null,2),'application/json');
+    $('#importBackupBtn').onclick=()=>$('#importBackupFile').click();
+    $('#importBackupFile').onchange=async event=>{const file=event.target.files?.[0];if(!file)return;try{const backup=JSON.parse(await file.text());if(backup.application!=='lazy-brew-timecard'||!Array.isArray(backup.records))throw new Error('This is not a LAZY BREW Timecard backup.');const known=new Set(records.map(r=>`${r.employee_name.toLowerCase()}|${r.work_date}|${r.time_in}|${r.time_out}`));let added=0;for(const item of backup.records){if(!item||typeof item.employee_name!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(item.work_date)||!item.time_in||!item.time_out)continue;const key=`${item.employee_name.trim().toLowerCase()}|${item.work_date}|${item.time_in}|${item.time_out}`;if(known.has(key))continue;const hrs=hoursFor(item.time_in.slice(0,5),item.time_out.slice(0,5)),rate=Math.max(0,Number(item.hourly_rate)||0),base=Number((hrs*rate).toFixed(2)),incentive=Math.max(0,Number(item.incentive)||0),transpo=Math.max(0,Number(item.transpo)||0);records.push({id:crypto.randomUUID(),employee_name:item.employee_name.trim(),work_date:item.work_date,time_in:item.time_in.slice(0,5),time_out:item.time_out.slice(0,5),total_hours:hrs,hourly_rate:rate,base_salary:base,incentive,transpo,total_salary:base+incentive+transpo,status:'pending'});known.add(key);added++;}saveRecords();renderRecords();message(`${added} staff shift${added===1?'':'s'} imported. Please review and approve them.`);}catch(error){message(error.message||'Could not import that backup file.',true);}finally{event.target.value='';}};
+    let installPrompt=null;const installBtn=$('#installBtn');window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;installBtn.hidden=false;});installBtn.onclick=async()=>{if(installPrompt){installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;installBtn.hidden=true;}else message(/iphone|ipad|ipod/i.test(navigator.userAgent)?'In Safari, tap Share, then Add to Home Screen.':'Open your browser menu and choose Install app or Add to Home screen.');};window.addEventListener('appinstalled',()=>installBtn.hidden=true);
+    if('serviceWorker'in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))navigator.serviceWorker.register('./sw.js');
+    renderDraft();renderRecords();
+  </script>
+</body>
+</html>
